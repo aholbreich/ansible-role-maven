@@ -1,0 +1,31 @@
+---
+
+- name: Get checksum for maven binary
+  get_url: url={{ maven_url }}.md5 dest=/tmp/maven.md5
+
+- name: Download maven {{ maven_version }} binary zip
+  get_url: url={{ maven_url}} dest=/tmp/maven.zip
+
+- name: Check checksum
+  command: echo " "{{ maven_url }} >> /tmp/maven.md5 && md5sum -c /tmp/maven.md5
+
+- name: Assure {{ maven_prefix }} dir exists
+  file: path={{ maven_prefix }} state=directory
+
+- name: Extrat maven to {{ maven_prefix }}
+  unarchive: >
+    copy=no
+    src=/tmp/maven.zip
+    dest={{ maven_prefix }}
+
+- name: Clenup /tmp/
+  file: path={{item}} state=absent
+  with_items:
+    - '/tmp/maven.zip'
+    - '/tmp/maven.md5'
+
+- name: Setup maven profile
+  template: src=etc/profile.d/maven.sh dest=/etc/profile.d/maven.sh owner=root group=root mode=0644
+
+- name: Create symlink /usr/local/bin/mvn pointing to from {{ maven_dir }}/bin/mvn 
+  file: src={{ maven_dir }}/bin/mvn dest=/usr/local/bin/mvn owner=root group=root state=link
