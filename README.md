@@ -1,4 +1,4 @@
-# Ansible Role: Acme 2.x
+# Ansible Role: aholbreich.maven
 
 An Ansible role that installs Apache Maven on linux
 
@@ -12,13 +12,13 @@ maven_version: 3.3.9 (Default)
 
 ## Dependencies
 
-No hard dependencies for installation.
+No hard dependencies for installation. But you keep in mind that you need java.
 
 ## Example Playbook
 
     - hosts: webservers
       roles:
-        - { role: username.acme }
+        - { role: aholbreich.maven }
 
 ## License
 
